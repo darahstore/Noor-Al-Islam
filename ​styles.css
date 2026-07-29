@@ -1,0 +1,203 @@
+/* ==========================================
+   إعدادات عامة (General & Reset)
+========================================== */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* ==========================================
+   أنظمة الألوان (Color Systems & Themes)
+========================================== */
+:root {
+    /* ألوان المصحف في الوضع النهاري (خلفية ورقية كريمية) */
+    --mushaf-bg-light: #fdfaf6;
+    --mushaf-border-light: #f0e6d2;
+    --mushaf-text-light: #1f2937;
+}
+
+/* 1. الوضع الليلي العميق (Dark OLED) */
+html.dark {
+    background-color: #000000; 
+}
+html.dark body {
+    background-color: #000000;
+}
+html.dark .bg-gray-800, 
+html.dark .bg-gray-900,
+html.dark .dark\:bg-gray-800,
+html.dark .dark\:bg-gray-900,
+html.dark .dark\:bg-darkbg {
+    background-color: #0a0a0a !important; 
+    border-color: #1a1a1a !important;
+}
+
+/* 2. الثيم الملكي / الذهبي المدفوع (Royal Pro Theme) */
+body.theme-royal {
+    background-color: #1a1510 !important;
+    color: #fceec5 !important;
+}
+body.theme-royal .bg-white,
+body.theme-royal .dark\:bg-gray-800,
+body.theme-royal .dark\:bg-gray-900 {
+    background-color: #26211a !important;
+    border-color: #D4AF37 !important;
+}
+body.theme-royal .text-primary,
+body.theme-royal .dark\:text-gray-100,
+body.theme-royal .text-gray-800 {
+    color: #D4AF37 !important; 
+}
+body.theme-royal .bg-primary {
+    background-color: #D4AF37 !important;
+    color: #1a1510 !important;
+    border-color: #D4AF37 !important;
+}
+body.theme-royal .border-primary {
+    border-color: #D4AF37 !important;
+}
+body.theme-royal nav {
+    background-color: #1a1510 !important;
+    border-color: #D4AF37 !important;
+}
+
+/* ==========================================
+   تنسيقات الخط القرآني والمصحف (Quran Typography)
+========================================== */
+.mushaf-page {
+    background-color: var(--mushaf-bg-light);
+    border: 1px solid var(--mushaf-border-light);
+    /* تأثير الورق القديم الخفيف */
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.04"/></svg>');
+}
+html.dark .mushaf-page {
+    background-color: #000000;
+    border-color: #1a1a1a;
+    background-image: none;
+}
+body.theme-royal .mushaf-page {
+    background-color: #15110d;
+    border-color: #D4AF37;
+    background-image: none;
+}
+
+.quran-text {
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    line-height: 2.8;
+    text-align: justify;
+    text-justify: inter-word;
+    direction: rtl;
+}
+.quran-text .ayah-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 8px;
+    color: #10b981; 
+    font-size: 0.65em;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+}
+html.dark .quran-text .ayah-number {
+    color: #34d399; 
+}
+body.theme-royal .quran-text .ayah-number {
+    color: #D4AF37;
+}
+
+/* ==========================================
+   ثيمات المسبحة المخصصة (Sebha Themes)
+========================================== */
+.sebha-wood {
+    background: radial-gradient(circle at center, #8B5A2B 0%, #4A2E15 100%) !important;
+    border-color: #2E1D0D !important;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 10px 15px rgba(0,0,0,0.3) !important;
+}
+.sebha-wood span {
+    color: #FFE4C4 !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+.sebha-royal {
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%) !important;
+    border-color: #D4AF37 !important;
+    box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.2), 0 0 30px rgba(212, 175, 55, 0.15) !important;
+}
+.sebha-royal span {
+    color: #D4AF37 !important;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+}
+
+/* ==========================================
+   مؤثرات الحركة (Animations)
+========================================== */
+
+/* 1. انتقالات الأقسام الأربعة */
+section {
+    animation: fadeInTab 0.3s ease-out forwards;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 2. نبض ناعم لزر المسبحة */
+.sebha-btn-active {
+    animation: pulseSoft 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pulseSoft {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(16, 185, 129, 0.4); }
+    50% { transform: scale(0.94); box-shadow: 0 0 25px rgba(16, 185, 129, 0.9); }
+    100% { transform: scale(1); box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+body.theme-royal .sebha-btn-active {
+    animation: pulseSoftRoyal 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pulseSoftRoyal {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(212, 175, 55, 0.4); }
+    50% { transform: scale(0.94); box-shadow: 0 0 25px rgba(212, 175, 55, 0.9); }
+    100% { transform: scale(1); box-shadow: 0 0 0 rgba(212, 175, 55, 0); }
+}
+
+/* 3. اندفاع أنيق للنوافذ المنبثقة (Modals) */
+.modal-enter .modal-content {
+    animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-backdrop-enter {
+    animation: backdropFade 0.2s ease-out forwards;
+}
+
+@keyframes backdropFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
