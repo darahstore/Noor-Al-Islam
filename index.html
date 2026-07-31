@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>نور الإسلام</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981', // Emerald 500
+                        secondary: '#047857', // Emerald 700
+                        darkbg: '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        button, a, select { touch-action: manipulation; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .lcd-screen {
+            font-family: 'Courier New', 'Digital', 'Orbitron', monospace;
+            background: #1a2a1a;
+            color: #33ff33;
+            text-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+            letter-spacing: 4px;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-align: center;
+            min-width: 180px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.3);
+            border: 3px solid #2d3a2d;
+            user-select: none;
+        }
+        .dark .lcd-screen {
+            background: #0d1a0d;
+            color: #44ff44;
+            text-shadow: 0 0 12px rgba(68, 255, 68, 0.7);
+            border-color: #1e2a1e;
+        }
+        .tally-btn-active { transform: scale(0.93); transition: transform 0.08s ease; }
+        #download-surah-btn { transition: all 0.2s ease; }
+        #download-surah-btn:active { transform: scale(0.94); }
+        .pro-subscription-highlight {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1a1a1a;
+            font-weight: 700;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+        .pro-subscription-highlight::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
+            animation: shimmer 2.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .dark .pro-subscription-highlight {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: #fef3c7;
+            border-color: #d97706;
+        }
+        .sebha-body {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-darkbg text-gray-800 dark:text-gray-100 font-[Cairo] h-screen flex flex-col overflow-hidden transition-colors duration-300">
+
+    <!-- 1. الشريط العلوي -->
+    <header class="bg-white dark:bg-gray-900 shadow-md px-4 py-3 flex justify-between items-center z-20 relative">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">☪️</span>
+            <h1 class="font-bold text-xl text-primary font-[Amiri]">نور الإسلام</h1>
+        </div>
+        <div class="flex gap-3">
+            <button id="btn-donate" class="p-2 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-white hover:from-amber-500 hover:to-yellow-600 transition shadow-md flex items-center justify-center" title="ترقية للنسخة الاحترافية Pro">
+                <span class="text-sm font-bold px-2">Pro 🔒</span>
+            </button>
+            <button id="btn-settings" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition shadow-sm" title="الإعدادات">⚙️</button>
+        </div>
+    </header>
+
+    <!-- 2. الأقسام الرئيسية -->
+    <main class="flex-1 overflow-y-auto pb-24 relative">
+        
+        <!-- قسم المصحف والحديث 📖 -->
+        <section id="tab-mushaf" class="p-4 space-y-4 max-w-3xl mx-auto block">
+            
+            <!-- أزرار التنقل الفرعية (المصحف / الختمة / الأحاديث) -->
+            <div class="flex gap-2 overflow-x-auto mb-2 pb-2 hide-scrollbar">
+                <button class="bg-primary text-white px-5 py-2 rounded-xl font-bold whitespace-nowrap shadow-sm text-sm">المصحف المكتوب</button>
+                <button class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-xl whitespace-nowrap flex items-center gap-1 font-semibold text-sm hover:bg-gray-50 transition btn-ad-feature">
+                    متابع الختمة <span class="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md shadow-sm">🎬</span>
+                </button>
+                <button class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-xl whitespace-nowrap flex items-center gap-1 font-semibold text-sm hover:bg-gray-50 transition btn-ad-feature">
+                    مكتبة الأحاديث <span class="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md shadow-sm">🎬</span>
+                </button>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 sticky top-0 z-10">
+                <div class="flex gap-2 mb-3">
+                    <input type="text" id="search-surah" placeholder="بحث عن سورة..." class="flex-1 p-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-primary text-sm">
+                </div>
+                <select id="select-surah-mushaf" class="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-primary font-bold">
+                    <option value="">اختر السورة من الـ 114 سورة...</option>
+                </select>
+            </div>
+            
+            <div class="bg-[#fdfaf6] dark:bg-gray-900 p-6 rounded-2xl shadow-inner border border-[#f0e6d2] dark:border-gray-700 min-h-[50vh]">
+                <div id="mushaf-header" class="text-center mb-6 hidden">
+                    <h2 id="mushaf-surah-name" class="text-2xl font-bold font-[Amiri] text-primary bg-[url('assets/ornament.png')] bg-no-repeat bg-center bg-contain py-4">سورة</h2>
+                    <p id="mushaf-bismillah" class="text-xl font-[Amiri] mt-2">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                </div>
+                <div id="mushaf-container" class="font-[Amiri] text-2xl leading-[2.5] text-center text-gray-900 dark:text-gray-100 transition-all duration-300">
+                    <div class="text-gray-400 text-sm font-[Cairo] mt-10">اختر السورة للبدء بالقراءة...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم القرآن الصوتي 🎧 -->
+        <section id="tab-audio" class="p-4 space-y-6 max-w-3xl mx-auto hidden">
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <h2 class="text-lg font-bold mb-4">الاستماع للقرآن الكريم</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">القارئ</label>
+                        <select id="select-reciter" class="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-primary">
+                            <option value="">اختر القارئ...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">الرواية</label>
+                        <select id="select-riwaya" class="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-primary">
+                            <option value="">اختر الرواية...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">السورة</label>
+                        <select id="select-surah-audio" class="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-primary">
+                            <option value="">اختر السورة...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="advanced-audio-player" class="mt-6 bg-primary/10 p-4 rounded-xl border border-primary/20">
+                    <div class="flex justify-between items-center mb-2">
+                        <span id="audio-title" class="font-bold text-sm">لم يتم الاختيار</span>
+                        <span id="audio-time" class="text-xs text-gray-500">00:00 / 00:00</span>
+                    </div>
+                    <input type="range" id="audio-progress" value="0" class="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer mb-4">
+                    <div class="flex justify-center gap-4 items-center">
+                        <button id="btn-audio-prev" class="text-2xl text-gray-600 dark:text-gray-300 hover:text-primary">⏮</button>
+                        <button id="btn-audio-play" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl shadow-lg hover:bg-secondary transition">▶</button>
+                        <button id="btn-audio-next" class="text-2xl text-gray-600 dark:text-gray-300 hover:text-primary">⏭</button>
+                    </div>
+                    <div class="flex justify-center mt-4">
+                        <button id="download-surah-btn" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-gray-700 border-2 border-dashed border-primary/40 hover:border-primary hover:bg-primary/5 text-primary font-semibold text-sm transition shadow-sm" title="تحميل السورة للاستماع بدون إنترنت">
+                            <span id="download-icon" class="text-lg">🔒</span>
+                            <span id="download-text">تحميل السورة (Pro)</span>
+                        </button>
+                    </div>
+                    <audio id="core-audio-player" class="hidden"></audio>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الأذكار والسبحة 📿 -->
+        <section id="tab-sebha" class="p-4 space-y-4 max-w-md mx-auto hidden flex flex-col items-center justify-center min-h-[70vh]">
+            
+            <!-- أزرار الأذكار ومتبع العبادات العلوية -->
+            <div class="w-full flex gap-2 mb-2 z-20 relative px-4">
+                <button class="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 py-3 rounded-xl text-sm font-bold shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition" onclick="document.getElementById('tab-azkar-list').classList.toggle('hidden')">🤲 أذكار المسلم</button>
+                <button class="flex-1 bg-gradient-to-r from-amber-400 to-amber-600 text-white py-3 rounded-xl text-sm font-bold shadow-sm flex items-center justify-center gap-1 btn-pro-feature">
+                    مُتبع العبادات <span class="text-xs bg-white/30 px-1.5 py-0.5 rounded-md">🔒</span>
+                </button>
+            </div>
+
+            <!-- قائمة الأذكار السريعة (تظهر وتختفي) -->
+            <div id="tab-azkar-list" class="w-full px-4 mb-4 hidden z-20 relative">
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 grid grid-cols-2 gap-2">
+                    <button class="py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm font-semibold hover:text-primary">🌅 الصباح</button>
+                    <button class="py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm font-semibold hover:text-primary">🌇 المساء</button>
+                    <button class="py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm font-semibold hover:text-primary">🌙 النوم</button>
+                    <button class="py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm font-semibold hover:text-primary">🕌 الصلاة</button>
+                </div>
+            </div>
+
+            <!-- المسبحة الإلكترونية -->
+            <div class="w-full text-center flex flex-col items-center">
+                <select id="sebha-theme-select" class="mb-4 p-2 w-full max-w-[18rem] text-sm rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none shadow-sm z-20 relative font-semibold">
+                    <option value="default">الأسود الكلاسيكي (مجاني)</option>
+                    <option value="blue">الأزرق المتروبوليتان (Pro/Ad 🎬)</option>
+                    <option value="red">العنابي المزخرف (Pro/Ad 🎬)</option>
+                    <option value="floral">الوردي المزخرف (Pro/Ad 🎬)</option>
+                    <option value="wood">الخشبي الرفيع (Pro/Ad 🎬)</option>
+                    <option value="marble">الرخام الأبيض (Pro/Ad 🎬)</option>
+                    <option value="turquoise">التركواز الكريستالي (Pro/Ad 🎬)</option>
+                </select>
+
+                <h3 id="current-dhikr-text" class="text-2xl font-bold text-primary dark:text-white font-[Amiri] mb-4 min-h-[3rem] z-20 relative">سُبْحَانَ اللَّهِ</h3>
+                
+                <div id="digital-tally-counter" class="relative flex flex-col items-center transition-transform duration-300">
+                    <div class="w-16 h-20 bg-[#c2c5cc] dark:bg-gray-600 rounded-t-full border-x-[3px] border-t-[3px] border-[#a0a5af] dark:border-gray-500 shadow-inner relative -mb-4 z-0 flex flex-col items-center pt-3 gap-4 opacity-90">
+                        <div class="w-3 h-3 bg-gray-500/40 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]"></div>
+                        <div class="w-3 h-3 bg-gray-500/40 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]"></div>
+                    </div>
+
+                    <div class="sebha-body relative z-10 w-64 h-80 rounded-[3rem] shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-gray-700 flex flex-col items-center pt-8 pb-6 px-4 bg-gray-900 transition-colors duration-300" style="border-radius: 40% 40% 45% 45% / 30% 30% 45% 45%;">
+                        <div class="w-full bg-black rounded-3xl p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] border-b-2 border-gray-700 flex flex-col relative">
+                            <div class="text-center text-white text-[11px] font-sans mb-1 tracking-widest font-semibold">zikirmatik</div>
+                            <div id="sebha-count-display" class="lcd-screen w-full !bg-[#b7c4b0] !text-black !text-right !px-3 !py-1 rounded-xl shadow-[inset_0_3px_8px_rgba(0,0,0,0.4)] border-2 border-gray-600 flex justify-end items-center h-16 !p-2 !min-w-0 !border-gray-600 !text-shadow-none">
+                                <span class="tracking-widest !text-4xl" style="font-family: 'Courier New', monospace; text-shadow: 1px 1px 1px rgba(0,0,0,0.2);">0000</span>
+                            </div>
+                            <div class="flex justify-between px-5 mt-1.5">
+                                <span class="text-white text-[9px] font-sans font-bold tracking-widest">COUNT</span>
+                                <span class="text-white text-[9px] font-sans font-bold tracking-widest">RESET</span>
+                            </div>
+                        </div>
+
+                        <div class="relative w-full h-full mt-6 flex justify-center items-center">
+                            <button id="reset-btn" class="absolute top-0 right-4 w-7 h-7 rounded-full bg-gradient-to-br from-gray-100 to-gray-500 border-[2px] border-gray-400 shadow-[0_3px_5px_rgba(0,0,0,0.5),inset_0_2px_4px_rgba(255,255,255,0.8)] active:shadow-inner active:scale-95 transition-all flex items-center justify-center z-20 cursor-pointer" title="تصفير العداد"></button>
+                            <button id="tally-btn" class="w-24 h-24 rounded-full bg-gradient-to-br from-gray-100 via-gray-300 to-gray-500 border-[3px] border-gray-300 shadow-[0_8px_15px_rgba(0,0,0,0.5),inset_0_4px_8px_rgba(255,255,255,0.9)] active:shadow-[0_2px_4px_rgba(0,0,0,0.5),inset_0_2px_4px_rgba(0,0,0,0.4)] active:scale-95 active:translate-y-1 transition-all flex items-center justify-center z-20 cursor-pointer mt-4" title="اضغط للعد">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 shadow-[inset_0_-2px_8px_rgba(0,0,0,0.2)] border border-gray-300/50"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="w-16 h-20 bg-[#c2c5cc] dark:bg-gray-600 rounded-b-full border-x-[3px] border-b-[3px] border-[#a0a5af] dark:border-gray-500 shadow-inner relative -mt-4 z-0 flex flex-col items-center justify-end pb-4 opacity-90">
+                        <div class="w-3 h-3 bg-gray-500/40 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center w-full max-w-[18rem] mt-8 px-2 relative z-20">
+                    <button id="btn-prev-dhikr" class="px-5 py-2.5 bg-white dark:bg-gray-700 shadow-sm rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 transition text-sm font-bold text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600">السابق</button>
+                    <button id="btn-reset-sebha" class="hidden">🔄</button>
+                    <button id="btn-next-dhikr" class="px-5 py-2.5 bg-primary text-white shadow-md rounded-full hover:bg-secondary transition text-sm font-bold">التالي</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم مواقيت الصلاة والقبلة 🕌 -->
+        <section id="tab-prayer" class="p-4 space-y-6 max-w-xl mx-auto hidden">
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold">تحديد الموقع</h2>
+                    <button id="btn-gps-location" class="text-xs bg-primary text-white px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-secondary transition shadow-sm">
+                        <span>📍</span> موقعي الحالي
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <select id="select-country" class="w-1/2 p-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm">
+                        <option value="">اختر الدولة</option>
+                    </select>
+                    <select id="select-city" class="w-1/2 p-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm">
+                        <option value="">اختر المدينة</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-primary to-secondary p-6 rounded-2xl shadow-lg text-white text-center">
+                <p class="text-sm opacity-80 mb-1">متبقي على الصلاة القادمة</p>
+                <h3 id="next-prayer-name" class="text-xl font-bold mb-2">صلاة العصر</h3>
+                <div id="next-prayer-countdown" class="text-4xl font-bold font-mono tracking-wider">--:--:--</div>
+            </div>
+
+            <div id="prayer-cards-container" class="grid grid-cols-1 gap-3">
+                <div class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-50 dark:border-gray-700">
+                    <span class="font-bold text-gray-700 dark:text-gray-200">الفجر</span>
+                    <span id="time-fajr" class="font-bold text-primary font-mono text-lg">--:--</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-50 dark:border-gray-700">
+                    <span class="font-bold text-gray-700 dark:text-gray-200">الظهر</span>
+                    <span id="time-dhuhr" class="font-bold text-primary font-mono text-lg">--:--</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-primary/10 dark:bg-primary/20 rounded-xl shadow-sm border border-primary/30">
+                    <span class="font-bold text-primary">العصر</span>
+                    <span id="time-asr" class="font-bold text-primary font-mono text-lg">--:--</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-50 dark:border-gray-700">
+                    <span class="font-bold text-gray-700 dark:text-gray-200">المغرب</span>
+                    <span id="time-maghrib" class="font-bold text-primary font-mono text-lg">--:--</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-50 dark:border-gray-700">
+                    <span class="font-bold text-gray-700 dark:text-gray-200">العشاء</span>
+                    <span id="time-isha" class="font-bold text-primary font-mono text-lg">--:--</span>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center">
+                <h3 class="font-bold mb-4">اتجاه القبلة</h3>
+                <div class="relative w-40 h-40 bg-gray-100 dark:bg-gray-900 rounded-full border-4 border-gray-200 dark:border-gray-700 flex items-center justify-center shadow-inner">
+                    <div id="qibla-compass" class="absolute w-full h-full flex justify-center transition-transform duration-500">
+                        <div class="w-1.5 h-1/2 bg-red-500 rounded-t-full origin-bottom shadow-sm"></div>
+                    </div>
+                    <span class="text-3xl z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-md">🕋</span>
+                </div>
+                <p id="qibla-degree-text" class="text-sm text-gray-500 mt-4 text-center">قم بتحديد الموقع لحساب القبلة</p>
+            </div>
+        </section>
+
+        <!-- قسم الأدوات الإضافية (الجديد) 🛠️ -->
+        <section id="tab-tools" class="p-4 space-y-4 max-w-xl mx-auto hidden">
+            <h2 class="font-bold text-xl mb-2 text-gray-800 dark:text-white px-2">أدوات إضافية</h2>
+            <div class="grid grid-cols-2 gap-4">
+                
+                <!-- حاسبة الزكاة (Ad) -->
+                <button class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center gap-3 relative overflow-hidden hover:bg-gray-50 transition btn-ad-feature">
+                    <div class="absolute top-2 left-2 text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded flex items-center gap-1 shadow-sm">🎬 إعلان</div>
+                    <span class="text-4xl mt-2 drop-shadow-sm">💰</span>
+                    <span class="font-bold text-sm text-gray-700 dark:text-gray-200">حاسبة الزكاة</span>
+                </button>
+                
+                <!-- التقويم الهجري (مجاني) -->
+                <button class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center gap-3 hover:bg-gray-50 transition">
+                    <span class="text-4xl mt-2 drop-shadow-sm">📅</span>
+                    <span class="font-bold text-sm text-gray-700 dark:text-gray-200">التقويم والمناسبات</span>
+                </button>
+                
+                <!-- المساجد القريبة (Pro) -->
+                <button class="bg-gradient-to-br from-white to-amber-50 dark:from-gray-800 dark:to-gray-900 p-5 rounded-2xl shadow-sm border border-amber-200 dark:border-amber-700/50 flex flex-col items-center gap-3 relative hover:shadow-md transition btn-pro-feature">
+                    <div class="absolute top-2 left-2 text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1">🔒 Pro</div>
+                    <span class="text-4xl mt-2 drop-shadow-sm">🕌</span>
+                    <span class="font-bold text-sm text-gray-700 dark:text-gray-200">المساجد القريبة</span>
+                </button>
+                
+                <!-- البث المباشر (Pro) -->
+                <button class="bg-gradient-to-br from-white to-amber-50 dark:from-gray-800 dark:to-gray-900 p-5 rounded-2xl shadow-sm border border-amber-200 dark:border-amber-700/50 flex flex-col items-center gap-3 relative hover:shadow-md transition btn-pro-feature">
+                    <div class="absolute top-2 left-2 text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1">🔒 Pro</div>
+                    <span class="text-4xl mt-2 drop-shadow-sm">🕋</span>
+                    <span class="font-bold text-sm text-gray-700 dark:text-gray-200">مباشر الحرمين</span>
+                </button>
+                
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 3. النوافذ المنبثقة (Modals) -->
+    
+    <!-- نافذة الإعدادات -->
+    <div id="modal-settings" class="fixed inset-0 bg-black/60 z-50 hidden flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-900">
+                <h2 class="font-bold text-lg">الإعدادات</h2>
+                <button id="btn-close-settings" class="text-gray-500 hover:text-red-500 text-xl font-bold">&times;</button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div>
+                    <label class="block mb-2 font-semibold text-sm">لغة التطبيق</label>
+                    <select id="settings-lang" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm">
+                        <option value="ar">العربية (Arabic)</option>
+                        <option value="en">English (الإنجليزية)</option>
+                        <option value="fr">Français (الفرنسية)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block mb-2 font-semibold text-sm">حجم خط المصحف</label>
+                    <div class="flex items-center gap-4 bg-gray-50 dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <button id="btn-font-minus" class="w-10 h-10 bg-white dark:bg-gray-800 rounded shadow text-xl hover:bg-gray-100">-</button>
+                        <span id="font-size-display" class="flex-1 text-center font-bold text-sm">متوسط</span>
+                        <button id="btn-font-plus" class="w-10 h-10 bg-white dark:bg-gray-800 rounded shadow text-xl hover:bg-gray-100">+</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block mb-2 font-semibold text-sm">حجم المسبحة الرقمية</label>
+                    <select id="settings-sebha-size" class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm font-semibold">
+                        <option value="xs">صغير جداً</option>
+                        <option value="sm">صغير</option>
+                        <option value="md" selected>متوسط (الافتراضي)</option>
+                        <option value="lg">كبير</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="font-semibold text-sm">الوضع الداكن (Dark Mode)</label>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-dark-mode" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="font-semibold text-sm">تفعيل الأصوات والاهتزاز</label>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-sound-vib" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إعلان المكافأة (Ad Reward Modal) - جديدة -->
+    <div id="modal-ad-reward" class="fixed inset-0 bg-black/70 z-50 hidden flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center border-t-4 border-amber-500 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-amber-500 rounded-full opacity-10 blur-xl"></div>
+            <div class="text-6xl mb-4 drop-shadow-md">📺</div>
+            <h3 class="font-bold text-xl mb-2 text-gray-800 dark:text-white">محتوى حصري</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
+                هذه الميزة تتطلب مشاهدة إعلان قصير لفتحها، أو الترقية للنسخة الاحترافية (Pro) للحصول عليها دائماً.
+            </p>
+            <div class="space-y-3 relative z-10">
+                <button id="btn-watch-ad" class="w-full py-3.5 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                    <span>شاهد الإعلان للفتح</span> <span class="text-lg">▶️</span>
+                </button>
+                <button id="btn-upgrade-from-ad" class="w-full py-3.5 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                    <span>ترقية لـ Pro (بدون إعلانات)</span> <span class="text-lg">⭐</span>
+                </button>
+                <button id="btn-close-ad-modal" class="w-full py-2 mt-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition text-sm font-semibold">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الدعم والترقية Pro الحالية -->
+    <div id="modal-donate" class="fixed inset-0 bg-black/60 z-50 hidden flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-amber-100 dark:border-gray-700 flex justify-between items-center bg-amber-50 dark:bg-gray-900">
+                <h2 class="font-bold text-lg text-amber-600 dark:text-amber-500 flex items-center gap-2"><span>⭐</span> النسخة الاحترافية Pro</h2>
+                <button id="btn-close-donate" class="text-gray-400 hover:text-red-500 text-xl font-bold">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                <div class="mb-5">
+                    <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-3 text-sm">الميزات المجانية للجميع:</h3>
+                    <ul class="text-xs space-y-2 text-gray-600 dark:text-gray-400">
+                        <li>✔️ استماع وقراءة القرآن والأذكار.</li>
+                        <li>✔️ مواقيت الصلاة والقبلة والتقويم.</li>
+                        <li>✔️ المسبحة الرقمية بالثيم الافتراضي.</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-6 p-4 bg-amber-50 dark:bg-gray-700/50 border border-amber-200 dark:border-amber-700/30 rounded-xl">
+                    <h3 class="font-bold text-amber-700 dark:text-amber-400 mb-3 text-sm flex items-center gap-1">ميزات النسخة المدفوعة (Pro):</h3>
+                    <ul class="text-xs space-y-2 text-gray-700 dark:text-gray-300 font-semibold">
+                        <li>🚫 إزالة جميع الإعلانات نهائياً.</li>
+                        <li>📿 فتح الثيمات الملكية الفخمة للمسبحة.</li>
+                        <li>⬇️ تحميل السور للاستماع بدون إنترنت.</li>
+                        <li>🕌 خريطة المساجد والبث المباشر.</li>
+                        <li>📊 مُتبع العبادات اليومي المتقدم.</li>
+                    </ul>
+                </div>
+
+                <div class="border-t border-gray-100 dark:border-gray-700 pt-5">
+                    <p class="text-center text-xs font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">اشترك الآن لفتح كل شيء</p>
+                    <button class="w-full py-4 rounded-xl pro-subscription-highlight font-bold transition flex justify-between items-center px-5 text-lg relative z-10" data-subscribe-pro="monthly">
+                        <span class="flex items-center gap-2">
+                            <span>تفعيل اشتراك Pro</span>
+                        </span>
+                        <span class="text-sm bg-white/30 dark:bg-black/20 px-3 py-1.5 rounded-full font-extrabold shadow-sm">$3.00 / شهرياً</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. شريط التنقل السفلي المحدث (5 أقسام) -->
+    <nav class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 fixed bottom-0 w-full z-20 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div class="flex justify-between items-center px-1 py-2">
+            <button class="nav-btn flex-1 flex flex-col items-center gap-1 text-primary font-bold transition transform scale-105" data-target="tab-mushaf">
+                <span class="text-2xl drop-shadow-sm">📖</span>
+                <span class="text-[10px] whitespace-nowrap">قرآن وحديث</span>
+            </button>
+            <button class="nav-btn flex-1 flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-primary transition" data-target="tab-audio">
+                <span class="text-2xl">🎧</span>
+                <span class="text-[10px] whitespace-nowrap">صوتيات</span>
+            </button>
+            <button class="nav-btn flex-1 flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-primary transition" data-target="tab-sebha">
+                <span class="text-2xl">📿</span>
+                <span class="text-[10px] whitespace-nowrap">أذكار وسبحة</span>
+            </button>
+            <button class="nav-btn flex-1 flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-primary transition" data-target="tab-prayer">
+                <span class="text-2xl">🕌</span>
+                <span class="text-[10px] whitespace-nowrap">مواقيت وقبلة</span>
+            </button>
+            <button class="nav-btn flex-1 flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-primary transition" data-target="tab-tools">
+                <span class="text-2xl">🛠️</span>
+                <span class="text-[10px] whitespace-nowrap">أدوات</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- سكربت تصفية والبحث عن السور -->
+    <script>
+        document.getElementById('search-surah').addEventListener('input', function(e) {
+            const searchValue = e.target.value.trim().replace(/[أإآ]/g, 'ا');
+            const select = document.getElementById('select-surah-mushaf');
+            if (!select) return;
+            
+            const options = select.options;
+            let firstMatchIndex = -1;
+
+            for (let i = 1; i < options.length; i++) {
+                const optionText = options[i].text.replace(/[أإآ]/g, 'ا');
+                if (optionText.includes(searchValue)) {
+                    options[i].hidden = false;
+                    options[i].style.display = ''; 
+                    if (firstMatchIndex === -1) firstMatchIndex = i;
+                } else {
+                    options[i].hidden = true;
+                    options[i].style.display = 'none'; 
+                }
+            }
+
+            if (searchValue !== '' && firstMatchIndex !== -1) {
+                select.selectedIndex = firstMatchIndex;
+                select.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+              </html>
