@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,7 +30,7 @@ jobs:
           cp -r index.html styles.css app.js www/ 2>/dev/null || true
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "نور الإسلام" "com.noor.islam" --web-dir "www"
+          npx cap init "NoorAlIslam" "com.noor.islam" --web-dir "www"
           npx cap add android
           npx cap copy android
 
