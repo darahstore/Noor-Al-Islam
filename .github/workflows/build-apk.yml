@@ -27,21 +27,25 @@ jobs:
       - name: Setup Android Environment
         uses: android-actions/setup-android@v3
 
-      - name: Prepare Files & Install Capacitor with Live Server
+      - name: Prepare Files & Install Capacitor
         run: |
           mkdir -p www
           cp -r index.html styles.css app.js www/ 2>/dev/null || true
           npm init -y
           npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-          npx cap init "NoorAlIslam" "com.noor.islam" --web-dir "www"
-          
-          # ربط التطبيق بموقعك على GitHub Pages لتفعيل التحديث التلقائي الفوري
-          node -e '
-            const fs = require("fs");
-            const config = JSON.parse(fs.readFileSync("capacitor.config.json"));
-            config.server = { url: "https://darahstore.github.io/Noor-Al-Islam/", cleartext: true };
-            fs.writeFileSync("capacitor.config.json", JSON.stringify(config, null, 2));
-          '
+
+          # إنشاء ملف الإعدادات المباشر لربط التحديث التلقائي بالموقع
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.noor.islam",
+            "appName": "NoorAlIslam",
+            "webDir": "www",
+            "server": {
+              "url": "https://darahstore.github.io/Noor-Al-Islam/",
+              "cleartext": true
+            }
+          }
+          EOF
 
           npx cap add android
           npx cap sync android
@@ -49,18 +53,7 @@ jobs:
       - name: Add Android Permissions
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
-          PERMISSIONS='
-            <uses-permission android:name="android.permission.INTERNET" />
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-            <uses-permission android:name="android.permission.CAMERA" />
-            <uses-permission android:name="android.permission.RECORD_AUDIO" />
-            <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-            <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-            <uses-permission android:name="android.permission.VIBRATE" />
-          '
-          sed -i "/<\/manifest>/i $PERMISSIONS" $MANIFEST
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-permission android:name="android.permission.RECORD_AUDIO" />\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.VIBRATE" />' $MANIFEST
 
       - name: Build APK with Gradle
         run: |
